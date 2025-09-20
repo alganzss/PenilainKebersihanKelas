@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Penilaian Kebersihan Kelas - MAN 1 Bengkulu</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 100%;
+            min-height: 100vh;
+            background: white;
+            box-shadow: 0 0 30px rgba(0,0,0,0.1);
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4682b4, #5a9fd4);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            font-size: 1.4rem;
+            margin-bottom: 5px;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+        }
+
+        .header h2 {
+            font-size: 0.9rem;
+            font-weight: 300;
+            opacity: 0.9;
+        }
+
+        .input-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .input-row {
+            display: flex;
+            gap: 10px;
+        }
+
+        .input-field {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .input-field label {
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+        }
+
+        .input-field input {
+            padding: 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .input-field input:focus {
+            outline: none;
+            border-color: #4682b4;
+            box-shadow: 0 0 0 3px rgba(70, 130, 180, 0.1);
+        }
+
+        .score-display {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            padding: 15px 20px;
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+            position: sticky;
+            top: 85px;
+            z-index: 99;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .categories {
+            padding: 20px;
+        }
+
+        .category {
+            background: white;
+            margin-bottom: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            overflow: hidden;
+            border: 1px solid #e9ecef;
+            transition: all 0.3s ease;
+        }
+
+        .category:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+        }
+
+        .category-header {
+            background: linear-gradient(135deg, #4682b4, #5a9fd4);
+            color: white;
+            padding: 15px;
+            font-weight: bold;
+            font-size: 1rem;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .category-header::after {
+            content: '▼';
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            transition: transform 0.3s ease;
+        }
+
+        .category.collapsed .category-header::after {
+            transform: translateY(-50%) rotate(-90deg);
+        }
+
+        .category-content {
+            padding: 0;
+            max-height: 1000px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .category.collapsed .category-content {
+            max-height: 0;
+            padding: 0;
+        }
+
+        .criteria-item {
+            padding: 15px;
+            border-bottom: 1px solid #f8f9fa;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: background-color 0.2s ease;
+        }
+
+        .criteria-item:last-child {
+            border-bottom: none;
+        }
+
+        .criteria-item:hover {
+            background-color: #f8f9fa;
+        }
+
+        .criteria-item.checked {
+            background-color: #d4edda;
+        }
+
+        .custom-checkbox {
+            position: relative;
+            width: 24px;
+            height: 24px;
+            min-width: 24px;
+        }
+
+        .custom-checkbox input {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            cursor: pointer;
+        }
+
+        .checkbox-visual {
+            width: 24px;
+            height: 24px;
+            border: 2px solid #4682b4;
+            border-radius: 6px;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .custom-checkbox input:checked + .checkbox-visual {
+            background: #4682b4;
+            border-color: #4682b4;
+        }
+
+        .custom-checkbox input:checked + .checkbox-visual::after {
+            content: '✓';
+            color: white;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .criteria-text {
+            flex: 1;
+            font-size: 0.95rem;
+            line-height: 1.4;
+        }
+
+        .criteria-points {
+            background: #4682b4;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .button-group {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            background: #f8f9fa;
+        }
+
+        .btn {
+            padding: 15px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #4682b4, #5a9fd4);
+            color: white;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #dc3545, #e74c3c);
+            color: white;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: white;
+            margin: 50px auto;
+            padding: 0;
+            border-radius: 12px;
+            max-width: 90%;
+            max-height: 80%;
+            overflow: hidden;
+            animation: modalSlideIn 0.3s ease;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, #4682b4, #5a9fd4);
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h3 {
+            margin: 0;
+            font-size: 1.2rem;
+        }
+
+        .close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: background-color 0.2s ease;
+        }
+
+        .close:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .modal-body {
+            padding: 20px;
+            max-height: 60vh;
+            overflow-y: auto;
+        }
+
+        .report-text {
+            font-family: 'Courier New', monospace;
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            white-space: pre-wrap;
+            font-size: 0.85rem;
+            line-height: 1.4;
+            border: 1px solid #dee2e6;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: #e9ecef;
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #28a745, #20c997);
+            border-radius: 3px;
+            transition: width 0.5s ease;
+            width: 0%;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #28a745;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            z-index: 1001;
+            display: none;
+            animation: toastSlideUp 0.3s ease;
+        }
+
+        @keyframes toastSlideUp {
+            from {
+                transform: translateX(-50%) translateY(100%);
+            }
+            to {
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+
+        @media (min-width: 768px) {
+            .container {
+                max-width: 800px;
+                margin: 0 auto;
+            }
+            
+            .input-row {
+                flex-direction: row;
+            }
+            
+            .button-group {
+                flex-direction: row;
+                justify-content: center;
+            }
+            
+            .btn {
+                flex: 1;
+                max-width: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>PENILAIAN KEBERSIHAN KELAS</h1>
+            <h2>MAN 1 KOTA BENGKULU</h2>
+        </div>
+
+        <div class="input-section">
+            <div class="input-group">
+                <div class="input-row">
+                    <div class="input-field">
+                        <label for="kelas">Kelas</label>
+                        <input type="text" id="kelas" placeholder="Contoh: X IPA 1">
+                    </div>
+                    <div class="input-field">
+                        <label for="tanggal">Tanggal</label>
+                        <input type="date" id="tanggal">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="score-display" id="scoreDisplay">
+            Total Skor: 0/100 (0%)
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+
+        <div class="categories" id="categories">
+            <!-- Categories will be generated by JavaScript -->
+        </div>
+
+        <div class="button-group">
+            <button class="btn btn-primary" onclick="hitungSkor()">Hitung Skor</button>
+            <button class="btn btn-danger" onclick="resetForm()">Reset</button>
+            <button class="btn btn-success" onclick="generateLaporan()">Generate Laporan</button>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div id="reportModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Laporan Penilaian Kebersihan</h3>
+                <button class="close" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="report-text" id="reportText"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div id="toast" class="toast"></div>
+
+    <script>
+        const kriteria = [
+            {
+                nama: "Kebersihan Lantai",
+                items: [
+                    "Lantai sudah disapu dan dipel",
+                    "Tidak ada jejak kaki/sepatu",
+                    "Tidak ada barang berserakan",
+                    "Tidak ada sampah",
+                    "Tidak ada genangan di lantai"
+                ]
+            },
+            {
+                nama: "Kebersihan Meja dan Bangku Siswa",
+                items: [
+                    "Tidak ada sampah di kolong meja",
+                    "Tidak ada sampah di atas meja",
+                    "Tidak ada barang berserakan di meja",
+                    "Saat piket, kursi dinaikkan ke atas meja",
+                    "Meja dan kursi tertata rapi"
+                ]
+            },
+            {
+                nama: "Kebersihan Papan Tulis dan Dinding",
+                items: [
+                    "Tidak ada coretan tidak penting di papan tulis",
+                    "Tidak ada noda/coretan di dinding",
+                    "Tidak ada cat dinding yang terkelupas",
+                    "Saklar bersih tidak ada debu/kotoran",
+                    "Stop kontak bersih tidak ada debu/kotoran"
+                ]
+            },
+            {
+                nama: "Kebersihan Jendela dan Pintu",
+                items: [
+                    "Tidak ada noda/kotoran di jendela",
+                    "Tidak ada noda/kotoran di pintu",
+                    "Tidak ada kerusakan pintu yang disengaja",
+                    "Tidak ada kerusakan jendela yang disengaja",
+                    "Tidak ada stiker/tempelan yang tidak penting"
+                ]
+            },
+            {
+                nama: "Kebersihan dan Kerapian Meja Guru",
+                items: [
+                    "Ada taplak meja",
+                    "Taplak meja dipasang rapi di meja",
+                    "Tersedianya tempat penyimpanan spidol, penghapus, dan ATK lainnya",
+                    "Tidak ada barang berserakan di atas meja",
+                    "Tidak ada barang berserakan di atas kursi"
+                ]
+            },
+            {
+                nama: "Ketersediaan Peralatan Kebersihan",
+                items: [
+                    "Ada sapu",
+                    "Ada alat pel",
+                    "Ada ember",
+                    "Ada serokan",
+                    "Ada kemoceng"
+                ]
+            },
+            {
+                nama: "Kelengkapan Administrasi Kelas",
+                items: [
+                    "Ada foto presiden dan wakil presiden",
+                    "Ada foto pancasila",
+                    "Ada jadwal piket",
+                    "Ada jadwal pelajaran",
+                    "Ada struktur kelas"
+                ]
+            },
+            {
+                nama: "Kebersihan Loteng/Langit-langit",
+                items: [
+                    "Tidak ada sarang laba-laba",
+                    "Tidak ada debu",
+                    "Tidak ada coretan",
+                    "Tidak ada benda/kotoran yang menempel",
+                    "Tidak ada kerusakan yang disengaja"
+                ]
+            },
+            {
+                nama: "Kebersihan Sudut Kelas",
+                items: [
+                    "Sudut kelas dalam keadaan rapi/tertata",
+                    "Jika ada lemari/loker siswa, barang-barang tersusun rapi",
+                    "Jika melepas sepatu, tersusun rapi di sudut kelas",
+                    "Jika ada tugas dari guru yang harus disimpan di dalam kelas, pastikan tersusun rapi",
+                    "Tidak ada bau/aroma tidak sedap disetiap sudut kelas"
+                ]
+            },
+            {
+                nama: "Ketersediaan Keranjang Penyimpanan Handphone",
+                items: [
+                    "Digunakan sesuai fungsi awal",
+                    "Tidak untuk meletakkan alat tulis",
+                    "Tidak untuk meletakkan jurnal kelas",
+                    "Tidak untuk tempat arsip surat ketidakhadiran siswa",
+                    "Tidak untuk meletakkan barang lain ataupun barang pribadi"
+                ]
+            }
+        ];
+
+        let totalSkor = 0;
+
+        function initializeApp() {
+            const categoriesContainer = document.getElementById('categories');
+            
+            kriteria.forEach((kategori, index) => {
+                const categoryDiv = document.createElement('div');
+                categoryDiv.className = 'category';
+                categoryDiv.innerHTML = `
+                    <div class="category-header" onclick="toggleCategory(${index})">
+                        ${kategori.nama}
+                    </div>
+                    <div class="category-content">
+                        ${kategori.items.map((item, itemIndex) => `
+                            <div class="criteria-item">
+                                <div class="custom-checkbox">
+                                    <input type="checkbox" id="checkbox_${index}_${itemIndex}" onchange="updateScore()">
+                                    <div class="checkbox-visual"></div>
+                                </div>
+                                <div class="criteria-text">${item}</div>
+                                <div class="criteria-points">2 pts</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+                categoriesContainer.appendChild(categoryDiv);
+            });
+
+            // Set tanggal hari ini
+            document.getElementById('tanggal').valueAsDate = new Date();
+            updateScore();
+        }
+
+        function toggleCategory(index) {
+            const category = document.querySelectorAll('.category')[index];
+            category.classList.toggle('collapsed');
+        }
+
+        function updateScore() {
+            const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+            totalSkor = 0;
+            
+            checkboxes.forEach(checkbox => {
+                const criteriaItem = checkbox.closest('.criteria-item');
+                if (checkbox.checked) {
+                    totalSkor += 2;
+                    criteriaItem.classList.add('checked');
+                } else {
+                    criteriaItem.classList.remove('checked');
+                }
+            });
+
+            const percentage = (totalSkor / 100) * 100;
+            const scoreDisplay = document.getElementById('scoreDisplay');
+            const progressFill = document.getElementById('progressFill');
+            
+            scoreDisplay.innerHTML = `
+                Total Skor: ${totalSkor}/100 (${percentage}%)
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+            `;
+            
+            // Update progress bar
+            const newProgressFill = document.getElementById('progressFill');
+            newProgressFill.style.width = `${percentage}%`;
+            
+            // Update color based on score
+            let bgColor;
+            if (totalSkor >= 90) bgColor = 'linear-gradient(135deg, #28a745, #20c997)';
+            else if (totalSkor >= 80) bgColor = 'linear-gradient(135deg, #28a745, #20c997)';
+            else if (totalSkor >= 70) bgColor = 'linear-gradient(135deg, #ffc107, #ffb300)';
+            else if (totalSkor >= 60) bgColor = 'linear-gradient(135deg, #fd7e14, #e8590c)';
+            else bgColor = 'linear-gradient(135deg, #dc3545, #c82333)';
+            
+            scoreDisplay.style.background = bgColor;
+        }
+
+        function hitungSkor() {
+            updateScore();
+            showToast(`Skor berhasil dihitung: ${totalSkor}/100`);
+        }
+
+        function resetForm() {
+            if (confirm('Apakah Anda yakin ingin mereset semua data?')) {
+                const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+                checkboxes.forEach(checkbox => {
+                    checkbox.checked = false;
+                });
+                
+                document.getElementById('kelas').value = '';
+                document.getElementById('tanggal').valueAsDate = new Date();
+                
+                updateScore();
+                showToast('Form berhasil direset');
+            }
+        }
+
+        function generateLaporan() {
+            const kelas = document.getElementById('kelas').value.trim();
+            const tanggal = document.getElementById('tanggal').value;
+            
+            if (!kelas || !tanggal) {
+                alert('Mohon isi data kelas dan tanggal terlebih dahulu!');
+                return;
+            }
+
+            let laporan = `=== LAPORAN PENILAIAN KEBERSIHAN KELAS ===\nMAN 1 KOTA BENGKULU\n\n`;
+            laporan += `Kelas: ${kelas}\n`;
+            laporan += `Tanggal: ${new Date(tanggal).toLocaleDateString('id-ID', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            })}\n`;
+            laporan += `======================================\n\n`;
+
+            let nomorKategori = 1;
+
+            kriteria.forEach((kategori, index) => {
+                laporan += `${nomorKategori++}. ${kategori.nama}:\n`;
+                let skorKategori = 0;
+
+                kategori.items.forEach((item, itemIndex) => {
+                    const checkbox = document.getElementById(`checkbox_${index}_${itemIndex}`);
+                    const status = checkbox.checked ? '✓' : '✗';
+                    const poin = checkbox.checked ? 2 : 0;
+                    skorKategori += poin;
+                    laporan += `   ${status} ${item} (${poin} poin)\n`;
+                });
+
+                laporan += `   Subtotal: ${skorKategori}/10 poin\n\n`;
+            });
+
+            laporan += `======================================\n`;
+            laporan += `TOTAL SKOR: ${totalSkor}/100\n`;
+
+            let kategoriKebersihan;
+            if (totalSkor >= 90) kategoriKebersihan = 'SANGAT BERSIH';
+            else if (totalSkor >= 80) kategoriKebersihan = 'BERSIH';
+            else if (totalSkor >= 70) kategoriKebersihan = 'CUKUP BERSIH';
+            else if (totalSkor >= 60) kategoriKebersihan = 'KURANG BERSIH';
+            else kategoriKebersihan = 'TIDAK BERSIH';
+
+            laporan += `KATEGORI: ${kategoriKebersihan}\n`;
+            laporan += `======================================\n\n`;
+            laporan += `Kepala Madrasah\n`;
+            laporan += `Hendri Kuswiran, M.Pd.\n`;
+            laporan += `NIP 197101122006041003`;
+
+            document.getElementById('reportText').textContent = laporan;
+            document.getElementById('reportModal').style.display = 'block';
+            
+            showToast(`Laporan berhasil dibuat! Kategori: ${kategoriKebersihan}`);
+        }
+
+        function closeModal() {
+            document.getElementById('reportModal').style.display = 'none';
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.style.display = 'block';
+            
+            setTimeout(() => {
+                toast.style.display = 'none';
+            }, 3000);
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('reportModal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+
+        // Initialize app when page loads
+        document.addEventListener('DOMContentLoaded', initializeApp);
+    </script>
+</body>
+</html>
